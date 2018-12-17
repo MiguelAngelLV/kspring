@@ -15,7 +15,12 @@ import javax.lang.model.element.ExecutableElement
 
 class SwaggerProcessor(val processingEnv: ProcessingEnvironment) {
 
+    lateinit var actualClass: Element
+
     fun generateClass(element: Element) {
+
+
+        actualClass = element
 
         val fileName = "${element.simpleName}Swagger"
         val controller = TypeSpec.classBuilder(fileName)
@@ -118,7 +123,7 @@ class SwaggerProcessor(val processingEnv: ProcessingEnvironment) {
 
 
         when {
-            responses.isEmpty() -> throw Exception("The element $element don't have response documentation")
+            responses.isEmpty() -> throw Exception("The element $element ( $actualClass ) don't have response documentation")
             else -> response.addMember("${responses.joinToString { "%L" }}", *responses.toTypedArray())
         }
 
@@ -133,7 +138,7 @@ class SwaggerProcessor(val processingEnv: ProcessingEnvironment) {
 
     fun getDocumentLine(type: String, element: Element): String {
         return getDocumentLines(type, element).firstOrNull()
-                ?: throw Exception("The element $element don't have $type documentation")
+                ?: throw Exception("The element $element  ( $actualClass )  don't have $type documentation")
 
     }
 
