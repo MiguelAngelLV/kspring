@@ -5,7 +5,7 @@ import io.swagger.annotations.Api
 import io.swagger.annotations.ApiOperation
 import io.swagger.annotations.ApiResponse
 import io.swagger.annotations.ApiResponses
-import org.malv.kspring.Generator
+import org.malv.kspring.KSpring.Companion.KAPT_KOTLIN_GENERATED_OPTION_NAME
 import org.springframework.web.bind.annotation.*
 import java.io.File
 import javax.annotation.processing.ProcessingEnvironment
@@ -58,7 +58,7 @@ class SwaggerProcessor(val processingEnv: ProcessingEnvironment) {
                 .addType(controller.build())
                 .build()
 
-        val dir = processingEnv.options[Generator.KAPT_KOTLIN_GENERATED_OPTION_NAME]
+        val dir = processingEnv.options[KAPT_KOTLIN_GENERATED_OPTION_NAME]
         file.writeTo(File(dir, "$fileName.kt"))
     }
 

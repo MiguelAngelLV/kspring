@@ -4,7 +4,7 @@ package org.malv.kspring.spring2mvc
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.squareup.kotlinpoet.*
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
-import org.malv.kspring.Generator
+import org.malv.kspring.KSpring.Companion.KAPT_KOTLIN_GENERATED_OPTION_NAME
 import org.malv.kspring.spring2swagger.REST
 import org.malv.kspring.spring2swagger.hasAnnotation
 import org.malv.kspring.spring2swagger.javaToKotlinType
@@ -295,7 +295,7 @@ class Spring2Mvc(val element: Element, val processingEnv: ProcessingEnvironment)
 
 
 
-        val dir = processingEnv.options[Generator.KAPT_KOTLIN_GENERATED_OPTION_NAME]
+        val dir = processingEnv.options[KAPT_KOTLIN_GENERATED_OPTION_NAME]
         val writer = FileWriter(File(dir, "$name.kt"))
 
 
