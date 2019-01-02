@@ -1,26 +1,24 @@
 package org.malv.kspring.spring2swagger
 
 import com.squareup.kotlinpoet.*
-import io.swagger.annotations.Api
-import io.swagger.annotations.ApiOperation
-import io.swagger.annotations.ApiResponse
-import io.swagger.annotations.ApiResponses
+import io.swagger.annotations.*
 import org.malv.kspring.KSpring.Companion.KAPT_KOTLIN_GENERATED_OPTION_NAME
 import org.springframework.web.bind.annotation.*
 import java.io.File
 import javax.annotation.processing.ProcessingEnvironment
 import javax.lang.model.element.Element
 import javax.lang.model.element.ExecutableElement
+import javax.lang.model.element.TypeElement
 
 
 class SwaggerProcessor(val processingEnv: ProcessingEnvironment) {
 
-    lateinit var actualClass: Element
+    lateinit var actualClass: TypeElement
 
     fun generateClass(element: Element) {
 
 
-        actualClass = element
+        actualClass = element as TypeElement
 
         val fileName = "${element.simpleName}Swagger"
         val controller = TypeSpec.classBuilder(fileName)
@@ -97,12 +95,47 @@ class SwaggerProcessor(val processingEnv: ProcessingEnvironment) {
 
         function.addAnnotation(generateResponses(element))
 
+
+        generateImplicitParams(element, function)
+
         function.modifiers.add(KModifier.OVERRIDE)
         function.addStatement("return super.${element.simpleName}(${element.parameters.joinToString { p -> p.simpleName }})")
 
         function.returns(element.returnType.asTypeName().javaToKotlinType())
 
+
+
         return function.build()
+
+    }
+
+
+    fun generateImplicitParams(element: ExecutableElement, function: FunSpec.Builder) {
+
+        val params = getDocumentLines("Param", element)
+
+        if (params.isEmpty()) return
+
+
+        val annotation = AnnotationSpec.builder(ApiImplicitParams::class.java)
+
+        val implicitParams = params.map {
+
+            val name = it.substringBefore(" ")
+            val type = it.substringBefore(" ")
+
+            AnnotationSpec.builder(ApiImplicitParam::class.java)
+                    .addMember("type = %S", type)
+                    .addMember("name = %S", name)
+                    .addMember("requited = true")
+                    .build()
+        }
+
+
+        annotation.addMember("${params.joinToString { "%L" }}", *implicitParams.toTypedArray())
+
+        function.addAnnotation(annotation.build())
+
 
     }
 
@@ -139,6 +172,11 @@ class SwaggerProcessor(val processingEnv: ProcessingEnvironment) {
     fun getDocumentLine(type: String, element: Element): String {
         return getDocumentLines(type, element).firstOrNull()
                 ?: throw Exception("The element $element  ( $actualClass )  don't have $type documentation")
+
+    }
+
+    fun getDocumentLineOptional(type: String, element: Element): String? {
+        return getDocumentLines(type, element).firstOrNull()
 
     }
 
