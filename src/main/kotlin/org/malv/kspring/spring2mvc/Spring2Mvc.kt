@@ -77,7 +77,7 @@ class Spring2Mvc(val element: Element, val processingEnv: ProcessingEnvironment)
 
 
     fun createDelete(method: ExecutableElement) {
-        val getMapping = method.getAnnotation(GetMapping::class.java)
+        val getMapping = method.getAnnotation(DeleteMapping::class.java)
         val endPoint = "$route${getMapping.value.first()}"
 
         val spec = FunSpec.builder(method.simpleName.toString())
