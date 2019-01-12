@@ -127,7 +127,7 @@ class SwaggerProcessor(val processingEnv: ProcessingEnvironment) {
             val type = data.last()
 
             AnnotationSpec.builder(ApiImplicitParam::class.java)
-                    .addMember("type = %S", type)
+                    .addMember("dataType = %S", type)
                     .addMember("name = %S", name)
                     .addMember("required = true")
                     .build()
