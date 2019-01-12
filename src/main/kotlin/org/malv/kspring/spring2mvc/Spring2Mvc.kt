@@ -91,7 +91,7 @@ class Spring2Mvc(val element: Element, val processingEnv: ProcessingEnvironment)
         }
 
 
-        spec.addStatement("""val call = delete("$endPoint"${urlParams.joinToString(separator = "") { ", ${it.simpleName}" }})""")
+        spec.addStatement("""val call = _delete("$endPoint"${urlParams.joinToString(separator = "") { ", ${it.simpleName}" }})""")
 
 
         parameters.forEach {
@@ -134,7 +134,7 @@ class Spring2Mvc(val element: Element, val processingEnv: ProcessingEnvironment)
 
 
 
-        spec.addStatement("""val call = get("$endPoint"${urlParams.joinToString(separator = "") { ", ${it.simpleName}" }})""")
+        spec.addStatement("""val call = _get("$endPoint"${urlParams.joinToString(separator = "") { ", ${it.simpleName}" }})""")
 
         if (method.parameters.any { it.asType().asTypeName().javaToKotlinType() == Pageable::class.asTypeName().javaToKotlinType() }) {
             spec.addParameter(ParameterSpec.builder("page", Int::class.asTypeName().javaToKotlinType().asNullable()).defaultValue("null").build())
@@ -192,7 +192,7 @@ class Spring2Mvc(val element: Element, val processingEnv: ProcessingEnvironment)
         spec.addParameter("${body.simpleName}", body.asType().asTypeName().javaToKotlinType())
 
 
-        spec.addStatement("""val call = post("$endPoint", ${body.simpleName}${urlParams.joinToString(separator = "") { ", ${it.simpleName}" }})""")
+        spec.addStatement("""val call = _post("$endPoint", ${body.simpleName}${urlParams.joinToString(separator = "") { ", ${it.simpleName}" }})""")
 
 
         val response = ApiResponse::class.asClassName()
@@ -228,7 +228,7 @@ class Spring2Mvc(val element: Element, val processingEnv: ProcessingEnvironment)
 
 
 
-        spec.addStatement("""val call = put("$endPoint", ${body.simpleName}${urlParams.joinToString(separator = "")  { ", ${it.simpleName}" }})""")
+        spec.addStatement("""val call = _put("$endPoint", ${body.simpleName}${urlParams.joinToString(separator = "")  { ", ${it.simpleName}" }})""")
 
 
         val response = ApiResponse::class.asClassName()
@@ -264,7 +264,7 @@ class Spring2Mvc(val element: Element, val processingEnv: ProcessingEnvironment)
 
         spec.addParameter(file, MockMultipartFile::class.asTypeName().javaToKotlinType())
 
-        spec.addStatement("""val call = file("$endPoint", $file${urlParams.joinToString(separator = "") { ", ${it.simpleName}" }})""")
+        spec.addStatement("""val call = _file("$endPoint", $file${urlParams.joinToString(separator = "") { ", ${it.simpleName}" }})""")
 
 
         val response = ApiResponse::class.asClassName()

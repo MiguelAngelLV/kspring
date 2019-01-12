@@ -14,7 +14,7 @@ open class ApiBase(val mockMvc: MockMvc, val mapper: ObjectMapper) {
 
 
 
-    fun get(url: String, vararg arguments: Any): MockHttpServletRequestBuilder {
+    fun _get(url: String, vararg arguments: Any): MockHttpServletRequestBuilder {
 
         return MockMvcRequestBuilders.get(url, *arguments)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -23,7 +23,7 @@ open class ApiBase(val mockMvc: MockMvc, val mapper: ObjectMapper) {
     }
 
 
-    fun post(url: String, body: Any?, vararg arguments: Any): MockHttpServletRequestBuilder {
+    fun _post(url: String, body: Any?, vararg arguments: Any): MockHttpServletRequestBuilder {
 
         val content = mapper.writeValueAsString(body)
 
@@ -35,7 +35,7 @@ open class ApiBase(val mockMvc: MockMvc, val mapper: ObjectMapper) {
     }
 
 
-    fun put(url: String, body: Any, vararg arguments: Any): MockHttpServletRequestBuilder {
+    fun _put(url: String, body: Any, vararg arguments: Any): MockHttpServletRequestBuilder {
 
         val content = mapper.writeValueAsString(body)
 
@@ -46,7 +46,7 @@ open class ApiBase(val mockMvc: MockMvc, val mapper: ObjectMapper) {
     }
 
 
-    fun delete(url: String, vararg arguments: Any): MockHttpServletRequestBuilder {
+    fun _delete(url: String, vararg arguments: Any): MockHttpServletRequestBuilder {
 
         return MockMvcRequestBuilders.delete(url, *arguments)
                 .accept(MediaType.APPLICATION_JSON)
@@ -54,7 +54,7 @@ open class ApiBase(val mockMvc: MockMvc, val mapper: ObjectMapper) {
     }
 
 
-    fun file(url: String, file: MockMultipartFile, vararg arguments: Any): MockHttpServletRequestBuilder {
+    fun _file(url: String, file: MockMultipartFile, vararg arguments: Any): MockHttpServletRequestBuilder {
         return MockMvcRequestBuilders.fileUpload(url, *arguments)
                 .file(file)
                 .accept(MediaType.APPLICATION_JSON)
