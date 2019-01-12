@@ -121,8 +121,10 @@ class SwaggerProcessor(val processingEnv: ProcessingEnvironment) {
 
         val implicitParams = params.map {
 
-            val name = it.substringBefore(" ")
-            val type = it.substringBefore(" ")
+            val data = it.split(" ")
+
+            val name = data.first()
+            val type = data.last()
 
             AnnotationSpec.builder(ApiImplicitParam::class.java)
                     .addMember("type = %S", type)
