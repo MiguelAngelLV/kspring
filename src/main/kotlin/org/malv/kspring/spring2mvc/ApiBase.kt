@@ -55,7 +55,7 @@ open class ApiBase(val mockMvc: MockMvc, val mapper: ObjectMapper) {
 
 
     fun _file(url: String, file: MockMultipartFile, vararg arguments: Any): MockHttpServletRequestBuilder {
-        return MockMvcRequestBuilders.fileUpload(url, *arguments)
+        return MockMvcRequestBuilders.multipart(url, *arguments)
                 .file(file)
                 .accept(MediaType.APPLICATION_JSON)
                 .session(session)
