@@ -65,7 +65,7 @@ class Spring2Mvc(val element: Element, val processingEnv: ProcessingEnvironment)
     fun generateMethods(m: ExecutableElement) {
 
         when {
-            m.hasAnnotation(PostMapping::class.java) && m.parameters.any { it.hasAnnotation(RequestParam::class.java) } -> createFile(m)
+            m.hasAnnotation(PostMapping::class.java) && m.parameters.any { it.hasAnnotation(RequestPart::class.java) } -> createFile(m)
             m.hasAnnotation(GetMapping::class.java) -> createGet(m)
             m.hasAnnotation(PostMapping::class.java) -> createPost(m)
             m.hasAnnotation(DeleteMapping::class.java) -> createDelete(m)
@@ -259,7 +259,7 @@ class Spring2Mvc(val element: Element, val processingEnv: ProcessingEnvironment)
         }
 
 
-        val file = method.parameters.find { it.hasAnnotation(RequestParam::class.java) }?.simpleName?.toString() ?: "file"
+        val file = method.parameters.find { it.hasAnnotation(RequestPart::class.java) }?.simpleName?.toString() ?: "file"
 
 
         spec.addParameter(file, MockMultipartFile::class.asTypeName().javaToKotlinType())
