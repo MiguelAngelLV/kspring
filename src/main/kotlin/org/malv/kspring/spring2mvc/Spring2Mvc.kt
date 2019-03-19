@@ -98,7 +98,7 @@ class Spring2Mvc(val element: Element, val processingEnv: ProcessingEnvironment)
             val name = "${it.simpleName}"
             val path = it.getAnnotation(RequestParam::class.java)?.value ?: name
             spec.addParameter(ParameterSpec.builder(name, it.asType().asTypeName().javaToKotlinType().asNullable()).defaultValue("null").build())
-            spec.addStatement("""call.param("$path", $name)""")
+            spec.addStatement("""call.param("$path", mapper.writeValueAsString($name))""")
 
         }
 
@@ -151,7 +151,7 @@ class Spring2Mvc(val element: Element, val processingEnv: ProcessingEnvironment)
             val name = "${it.simpleName}"
             val path = it.getAnnotation(RequestParam::class.java)?.value ?: name
             spec.addParameter(ParameterSpec.builder(name, it.asType().asTypeName().javaToKotlinType().asNullable()).defaultValue("null").build())
-            spec.addStatement("""call.param("$path", $name)""")
+            spec.addStatement("""call.param("$path", mapper.writeValueAsString($name))""")
 
         }
 
