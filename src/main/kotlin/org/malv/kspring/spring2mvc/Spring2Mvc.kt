@@ -100,10 +100,7 @@ class Spring2Mvc(val element: Element, val processingEnv: ProcessingEnvironment)
             spec.addParameter(ParameterSpec.builder(name, it.asType().asTypeName().javaToKotlinType().asNullable()).defaultValue("null").build())
 
 
-            spec.addStatement("if ($name as? Iterable<*> != null)")
-            spec.addStatement("""  call.param("$path", $name.joinToString(","))""")
-            spec.addStatement("else")
-            spec.addStatement("""  call.param("$path", "$$name")""")
+            spec.addStatement("""call.param("$path", convert($name))""")
 
         }
 
@@ -157,10 +154,8 @@ class Spring2Mvc(val element: Element, val processingEnv: ProcessingEnvironment)
             val path = it.getAnnotation(RequestParam::class.java)?.value ?: name
             spec.addParameter(ParameterSpec.builder(name, it.asType().asTypeName().javaToKotlinType().asNullable()).defaultValue("null").build())
 
-            spec.addStatement("if ($name as? Iterable<*> != null)")
-            spec.addStatement("""  call.param("$path", $name.joinToString(","))""")
-            spec.addStatement("else")
-            spec.addStatement("""  call.param("$path", "$$name")""")
+            spec.addStatement("""call.param("$path", convert($name))""")
+
         }
 
 

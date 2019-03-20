@@ -62,6 +62,15 @@ open class ApiBase(val mockMvc: MockMvc, val mapper: ObjectMapper) {
     }
 
 
+
+    protected fun convert(param: Any) : String {
+        return when (param){
+            is String -> param
+            is List<*> -> param.joinToString(separator = ",") { "$it"}
+            else -> "$param"
+        }
+    }
+
     companion object {
         val session = MockHttpSession()
     }
