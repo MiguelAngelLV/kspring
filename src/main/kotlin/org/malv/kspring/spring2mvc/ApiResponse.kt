@@ -29,7 +29,7 @@ class ApiResponse <T>  (val result: MvcResult, val type: TypeReference<T>, val m
 
     }
 
-    fun assertSuccesful() {
+    fun assertSuccessful() {
         if (status < 200 || status > 299)
             throw Exception("Expected successful, get $status")
     }
