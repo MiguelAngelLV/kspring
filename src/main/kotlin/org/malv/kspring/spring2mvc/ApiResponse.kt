@@ -29,6 +29,11 @@ class ApiResponse <T>  (val result: MvcResult, val type: TypeReference<T>, val m
 
     }
 
+    fun assertSuccesful() {
+        if (status < 200 || status > 299)
+            throw Exception("Expected successful, get $status")
+    }
+
     fun assertForbiden() {
         if (status != HttpStatus.FORBIDDEN.value())
             throw Exception("Expected forbidden")
