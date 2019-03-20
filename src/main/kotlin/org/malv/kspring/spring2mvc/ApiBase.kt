@@ -63,11 +63,12 @@ open class ApiBase(val mockMvc: MockMvc, val mapper: ObjectMapper) {
 
 
 
-    protected fun convert(param: Any) : String {
+    protected fun convert(param: Any?) : Array<String> {
         return when (param){
-            is String -> param
-            is List<*> -> param.joinToString(separator = ",") { "$it"}
-            else -> "$param"
+            null -> emptyArray()
+            is String -> arrayOf(param)
+            is List<*> -> param.map { "$it" }.toTypedArray()
+            else -> arrayOf("$param")
         }
     }
 
