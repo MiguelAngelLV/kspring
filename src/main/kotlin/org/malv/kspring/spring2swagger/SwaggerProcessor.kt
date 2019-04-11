@@ -2,6 +2,7 @@ package org.malv.kspring.spring2swagger
 
 import com.squareup.kotlinpoet.*
 import io.swagger.annotations.*
+import org.jetbrains.annotations.Nullable
 import org.malv.kspring.KSpring.Companion.KAPT_KOTLIN_GENERATED_OPTION_NAME
 import org.springframework.web.bind.annotation.*
 import java.io.File
@@ -71,11 +72,31 @@ class SwaggerProcessor(val processingEnv: ProcessingEnvironment) {
         val function = FunSpec.builder(element.simpleName.toString())
 
         element.parameters.forEach {
-            val param = ParameterSpec.builder("${it.simpleName}", it.asType().asTypeName().javaToKotlinType())
-            it.annotationMirrors.forEach {
-                param.addAnnotation(AnnotationSpec.get(it))
+            val type =
+                    if (it.hasAnnotation(Nullable::class.java))
+                        it.asType().asTypeName().javaToKotlinType().asNullable()
+                    else
+                        it.asType().asTypeName().javaToKotlinType().asNonNull()
+
+            val param = ParameterSpec.builder("${it.simpleName}", type)
+
+            it.annotationMirrors
+                    .map { a -> AnnotationSpec.get(a) }
+                    .filterNot { a -> a.className.simpleName == "RequestParam" }
+                    .forEach { a -> param.addAnnotation(a)
             }
 
+            if (it.hasAnnotation(RequestParam::class.java)) {
+                val spec = AnnotationSpec.get(it.getAnnotation(RequestParam::class.java))
+                val builder = AnnotationSpec.builder(RequestParam::class.java)
+                spec.members
+                        .filterNot { c -> "$c".startsWith("required") }
+                        .forEach { c -> builder.addMember(c) }
+
+                builder.addMember("required = ${!it.hasAnnotation(Nullable::class.java)}")
+
+                param.addAnnotation(builder.build())
+            }
 
 
             function.addParameter(param.build())
