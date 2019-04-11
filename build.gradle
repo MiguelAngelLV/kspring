@@ -31,7 +31,7 @@ repositories {
 dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
     compile 'com.squareup:kotlinpoet:1.0.0-RC2'
-    compile "com.google.auto.service:auto-service:1.0-rc2"
+    compileOnly "com.google.auto.service:auto-service:1.0-rc2"
     compile "org.jetbrains.kotlin:kotlin-reflect"
 
     compile 'io.springfox:springfox-swagger2:2.9.2'
