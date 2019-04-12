@@ -4,6 +4,7 @@ package org.malv.kspring.spring2mvc
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.squareup.kotlinpoet.*
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
+import org.jetbrains.annotations.Nullable
 import org.malv.kspring.KSpring.Companion.KAPT_KOTLIN_GENERATED_OPTION_NAME
 import org.malv.kspring.spring2swagger.REST
 import org.malv.kspring.spring2swagger.hasAnnotation
@@ -139,6 +140,25 @@ class Spring2Mvc(val element: Element, val processingEnv: ProcessingEnvironment)
 
         spec.addStatement("""val call = _get("$endPoint"${urlParams.joinToString(separator = "") { ", ${it.simpleName}" }})""")
 
+
+
+        parameters
+                .sortedBy { it.hasAnnotation(Nullable::class.java) }
+                .forEach {
+            val name = "${it.simpleName}"
+            val path = it.getAnnotation(RequestParam::class.java)?.value ?: name
+
+            if (it.hasAnnotation(Nullable::class.java))
+                spec.addParameter(ParameterSpec.builder(name, it.asType().asTypeName().javaToKotlinType().asNullable()).defaultValue("null").build())
+            else
+                spec.addParameter(ParameterSpec.builder(name, it.asType().asTypeName().javaToKotlinType().asNonNull()).build())
+
+            spec.addStatement("""if (convert($name).isNotEmpty())""")
+            spec.addStatement("""  call.param("$path", *convert($name))""")
+
+        }
+
+
         if (method.parameters.any { it.asType().asTypeName().javaToKotlinType() == Pageable::class.asTypeName().javaToKotlinType() }) {
             spec.addParameter(ParameterSpec.builder("page", Int::class.asTypeName().javaToKotlinType().asNullable()).defaultValue("null").build())
             spec.addParameter(ParameterSpec.builder("size", Int::class.asTypeName().javaToKotlinType().asNullable()).defaultValue("null").build())
@@ -149,17 +169,6 @@ class Spring2Mvc(val element: Element, val processingEnv: ProcessingEnvironment)
             spec.addStatement("""sort?.let { call.param("sort", it) }""")
 
         }
-
-        parameters.forEach {
-            val name = "${it.simpleName}"
-            val path = it.getAnnotation(RequestParam::class.java)?.value ?: name
-            spec.addParameter(ParameterSpec.builder(name, it.asType().asTypeName().javaToKotlinType().asNullable()).defaultValue("null").build())
-
-            spec.addStatement("""if (convert($name).isNotEmpty())""")
-            spec.addStatement("""  call.param("$path", *convert($name))""")
-
-        }
-
 
         val response = ApiResponse::class.asClassName()
         val returnType = response.parameterizedBy(method.returnType.asTypeName().javaToKotlinType())
