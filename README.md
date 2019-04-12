@@ -3,7 +3,7 @@
 KSpring es una biblioteca diseñada para automatizar dos tareas muy «aburridas y repetitivas» a la hora
 de trabajar con Spring Boot y Kotlin: Generar clientes para test's y crear documentación para Swagger UI.
 
-Esta diseña para **mi estructura**, por lo cual, algunos métodos, sistemas de conversión u otros pueden no adaptarse a tus necesidades. 
+KSpring está diseñada para **mi estructura**, por lo cual, algunos métodos, sistemas de conversión u otros pueden no adaptarse a tus necesidades. 
 Te animo a que envies pull requests con tus aportaciones.
 
 
@@ -12,8 +12,7 @@ Te animo a que envies pull requests con tus aportaciones.
 Cuando realizamos los test's de nuestra API de Spring Boot, es habitual acceder a los EndPoints usando
 MockMVC, lo cual nos obliga a escribir manualmente las URL's de los EndPoints, convertir de POJO a JSON y viceversa, entre otras muchas tareas.
 
-El módulo Spring2MVC de KSpring escaneará todos tus RestControllers y generará una nueva clase con el prefijo «Api» que incluirá todos
-los métodos y se ocupará de la transformación de JSON. Así msimo, también incluye varios métodos de ayuda para verificar tipo de respuesta (como errores) entre otros.
+El módulo Spring2MVC de KSpring escaneará todos tus RestControllers y generará una nueva clase con el prefijo «Api» que incluirá todos los métodos y se ocupará de la transformación de JSON. Así msimo, también incluye varios métodos de ayuda para verificar tipo de respuesta (como errores) entre otros.
 
 
 De este Controller
@@ -75,9 +74,8 @@ Esto nos permitirá mantener el código siempre actualizado y limpio.
 
 #### Generación de Documentación para Swagger UI
 
-Swagger UI requiere de añadir numerosas anotaciones a nuestro código, las cuales, además de ser tediosas de escribir, dejan el código bastante menos legibles. 
-Por ello, usando Spring2Swagger, podremos usar una documentación semejante a Javadoc para documentar nuestros EndPoints y S2S creará subclases con las anotaciones pertinentes
-para que Swagger pueda usarlas sin tener que escribirlas nosotros «ni verlas».
+Swagger UI requiere de añadir numerosas anotaciones a nuestro código, las cuales, además de ser tediosas de escribir, dejan el código bastante menos legible. 
+Por ello, usando Spring2Swagger, podremos usar una documentación semejante a Javadoc para documentar nuestros EndPoints y S2S creará subclases con las anotaciones pertinentes para que Swagger pueda usarlas sin tener que escribirlas nosotros «ni verlas».
 
 
 ```kotlin
@@ -180,7 +178,7 @@ class UsersControllerSwagger : UsersController() {
 
 ```
 
-Para asegurar que se no se pasa por alto ninguna anotación, el KSpring dará error de compilación en caso de no encontrar la pertinente documentación para uno de los EndPoints.
+Para asegurar que se no se pasa por alto ninguna anotación, el KSpring dará error de compilación en caso de no encontrar la pertinente documentación para uno de los EndPoints: Si no documentas, no ejecutas.
 
 
 
@@ -221,6 +219,5 @@ dependencies {
 Después, tenemos que reemplazar en nuestros controlladores las anotaciones **@RestController** y **@RequestMapping** por **@REST**, y finalmente, añadir la documentación.
 
 
-En el caso de usar IntelliJ, este no genera automáticamente las clases y necesitaremos ejecutar manualmente gradle para proceda a la generación de las clases, tanto la primera 
-como cada vez que realicemos cambios en la interfaz de la misma (documentación, nuevos métodos, cambio de parámetros...)
+En el caso de usar IntelliJ, este no genera automáticamente las clases y necesitaremos ejecutar manualmente gradle desde la terminal para proceda a la generación de las clases, tanto la primera como cada vez que realicemos cambios en la interfaz de la misma (documentación, nuevos métodos, cambio de parámetros...), pero no hace por cada cambio en el código.
 
