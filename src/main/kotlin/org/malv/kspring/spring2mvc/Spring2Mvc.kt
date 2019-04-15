@@ -15,6 +15,7 @@ import org.springframework.test.web.servlet.MockMvc
 import org.springframework.web.bind.annotation.*
 import java.io.File
 import java.io.FileWriter
+import java.lang.Exception
 import javax.annotation.processing.ProcessingEnvironment
 import javax.lang.model.element.Element
 import javax.lang.model.element.ExecutableElement
@@ -201,7 +202,7 @@ class Spring2Mvc(val element: Element, val processingEnv: ProcessingEnvironment)
         }
 
 
-        val body = method.parameters.first { it.hasAnnotation(RequestBody::class.java) }
+        val body = method.parameters.firstOrNull { it.hasAnnotation(RequestBody::class.java) } ?: throw Exception("POST method ($route) don't  have Body")
 
         spec.addParameter("${body.simpleName}", body.asType().asTypeName().javaToKotlinType())
 
