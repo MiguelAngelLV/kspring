@@ -202,7 +202,7 @@ class Spring2Mvc(val element: Element, val processingEnv: ProcessingEnvironment)
         }
 
 
-        val body = method.parameters.firstOrNull { it.hasAnnotation(RequestBody::class.java) } ?: throw Exception("POST method ($route) don't  have Body")
+        val body = method.parameters.firstOrNull { it.hasAnnotation(RequestBody::class.java) } ?: throw Exception("POST method ($endPoint) don't  have Body")
 
         spec.addParameter("${body.simpleName}", body.asType().asTypeName().javaToKotlinType())
 
