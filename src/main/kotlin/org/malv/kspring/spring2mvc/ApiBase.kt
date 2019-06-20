@@ -1,6 +1,7 @@
 package org.malv.kspring.spring2mvc
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
 import org.springframework.mock.web.MockHttpSession
 import org.springframework.mock.web.MockMultipartFile
@@ -19,6 +20,7 @@ open class ApiBase(val mockMvc: MockMvc, val mapper: ObjectMapper) {
         return MockMvcRequestBuilders.get(url, *arguments)
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
+                .headers(headers)
                 .session(session)
     }
 
@@ -31,6 +33,7 @@ open class ApiBase(val mockMvc: MockMvc, val mapper: ObjectMapper) {
                 .content(content)
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
+                .headers(headers)
                 .session(session)
     }
 
@@ -43,6 +46,7 @@ open class ApiBase(val mockMvc: MockMvc, val mapper: ObjectMapper) {
                 .content(content)
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
+                .headers(headers)
                 .session(session)
     }
 
@@ -51,6 +55,7 @@ open class ApiBase(val mockMvc: MockMvc, val mapper: ObjectMapper) {
 
         return MockMvcRequestBuilders.delete(url, *arguments)
                 .accept(MediaType.APPLICATION_JSON)
+                .headers(headers)
                 .session(session)
     }
 
@@ -59,6 +64,7 @@ open class ApiBase(val mockMvc: MockMvc, val mapper: ObjectMapper) {
         return MockMvcRequestBuilders.multipart(url, *arguments)
                 .file(file)
                 .accept(MediaType.APPLICATION_JSON)
+                .headers(headers)
                 .session(session)
     }
 
@@ -75,6 +81,7 @@ open class ApiBase(val mockMvc: MockMvc, val mapper: ObjectMapper) {
 
     companion object {
         val session = MockHttpSession()
+        val headers = HttpHeaders()
     }
 
 
