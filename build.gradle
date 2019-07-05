@@ -36,11 +36,14 @@ dependencies {
 
     compile 'io.springfox:springfox-swagger2:2.9.2'
 
-    //Spring
+      //Spring
     compile "org.springframework:spring-web:5.1.3.RELEASE"
-    compile "org.springframework:spring-test:5.1.3.RELEASE"
     compile "org.springframework.data:spring-data-commons-core:1.4.1.RELEASE"
-    compile 'org.springframework.restdocs:spring-restdocs-mockmvc:2.0.3.RELEASE'
+
+    //Retrofit
+    compile 'com.squareup.retrofit2:retrofit:2.6.0'
+    compile 'com.squareup.retrofit2:converter-jackson:2.6.0'
+
 
 
     //Mapper
