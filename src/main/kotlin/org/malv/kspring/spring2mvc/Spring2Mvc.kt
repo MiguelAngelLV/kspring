@@ -154,6 +154,15 @@ class Spring2Mvc(val element: Element, val processingEnv: ProcessingEnvironment)
             )
         }
 
+
+        if (method.parameters.any { it.asType().asTypeName().javaToKotlinType() == Pageable::class.asTypeName().javaToKotlinType() }) {
+            spec.addParameter(ParameterSpec.builder("page", Int::class.asTypeName().javaToKotlinType().asNullable()).defaultValue("null").build())
+            spec.addParameter(ParameterSpec.builder("size", Int::class.asTypeName().javaToKotlinType().asNullable()).defaultValue("null").build())
+            spec.addParameter(ParameterSpec.builder("sort", String::class.asTypeName().javaToKotlinType().asNullable()).defaultValue("null").build())
+        }
+
+
+
         val response = Call::class.asClassName()
         val returnType = response.parameterizedBy(method.returnType.asTypeName().javaToKotlinType())
 
