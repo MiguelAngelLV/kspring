@@ -56,7 +56,7 @@ fun <T> Response<T>.assertUnprocessable() {
 
 fun <T> Response<T>.assertSuccessful() {
     if (code() !in 200..299)
-        throw Exception("Expected successful, ${code()}")
+        throw Exception("Expected successful, get ${code()} -> ${errorBody()?.string()}")
 }
 
 
