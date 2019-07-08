@@ -35,17 +35,22 @@ fun <T : Any> Response<Page<T>>.list(): List<T> {
 
 fun <T> Response<T>.assertNotFound() {
     if (code() != HttpStatus.NOT_FOUND.value())
-        throw Exception("Expected not found, get ${code()}")
+        throw Exception("Expected not found, get ${code()} -> ${errorBody()?.string()}")
 }
 
 fun <T> Response<T>.assertForbiden() {
     if (code() != HttpStatus.FORBIDDEN.value())
-        throw Exception("Expected forbidden, get ${code()}")
+        throw Exception("Expected forbidden, get ${code()} -> ${errorBody()?.string()}")
 }
 
 fun <T> Response<T>.assertUnauthorized() {
     if (code() != HttpStatus.UNAUTHORIZED.value())
-        throw Exception("Expected unauthorized, get ${code()}")
+        throw Exception("Expected unauthorized, get ${code()} -> ${errorBody()?.string()}")
+}
+
+fun <T> Response<T>.assertUnprocessable() {
+    if (code() != HttpStatus.UNPROCESSABLE_ENTITY.value())
+        throw Exception("Expected unprocessable, get ${code()} -> ${errorBody()?.string()}")
 }
 
 
