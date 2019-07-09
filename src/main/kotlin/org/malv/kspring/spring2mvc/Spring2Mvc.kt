@@ -156,9 +156,18 @@ class Spring2Mvc(val element: Element, val processingEnv: ProcessingEnvironment)
 
 
         if (method.parameters.any { it.asType().asTypeName().javaToKotlinType() == Pageable::class.asTypeName().javaToKotlinType() }) {
-            spec.addParameter(ParameterSpec.builder("page", Int::class.asTypeName().javaToKotlinType().asNullable()).defaultValue("null").build())
-            spec.addParameter(ParameterSpec.builder("size", Int::class.asTypeName().javaToKotlinType().asNullable()).defaultValue("null").build())
-            spec.addParameter(ParameterSpec.builder("sort", String::class.asTypeName().javaToKotlinType().asNullable()).defaultValue("null").build())
+            spec.addParameter(ParameterSpec.builder("page", Int::class.asTypeName().javaToKotlinType()
+                    .asNullable()).defaultValue("null")
+                    .addAnnotation(AnnotationSpec.builder(Query::class.java).addMember("value = %S", "page").build())
+                    .build())
+            spec.addParameter(ParameterSpec.builder("size", Int::class.asTypeName().javaToKotlinType()
+                    .asNullable()).defaultValue("null")
+                    .addAnnotation(AnnotationSpec.builder(Query::class.java).addMember("value = %S", "size").build())
+                    .build())
+            spec.addParameter(ParameterSpec.builder("sort", String::class.asTypeName().javaToKotlinType()
+                    .asNullable()).defaultValue("null")
+                    .addAnnotation(AnnotationSpec.builder(Query::class.java).addMember("value = %S", "sort").build())
+                    .build())
         }
 
 
