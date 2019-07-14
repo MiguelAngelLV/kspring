@@ -251,6 +251,7 @@ class Spring2Mvc(val element: Element, val processingEnv: ProcessingEnvironment)
         val endPoint = "$route${mapping.value.first()}"
 
         val spec = FunSpec.builder(method.simpleName.toString())
+                .addModifiers(KModifier.ABSTRACT)
 
         spec.addAnnotation(AnnotationSpec.builder(PUT::class.java)
                 .addMember("value = %S", endPoint)
