@@ -3,6 +3,7 @@ package org.malv.kspring.spring2mvc
 
 import com.squareup.kotlinpoet.*
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
+import okhttp3.MultipartBody
 import org.jetbrains.annotations.Nullable
 import org.malv.kspring.KSpring.Companion.KAPT_KOTLIN_GENERATED_OPTION_NAME
 import org.malv.kspring.spring2swagger.REST
@@ -323,8 +324,11 @@ class Spring2Mvc(val element: Element, val processingEnv: ProcessingEnvironment)
         val file = method.parameters.find { it.hasAnnotation(RequestPart::class.java) }?.simpleName?.toString() ?: "file"
 
 
-        spec.addParameter(file, Part::class.asTypeName().javaToKotlinType())
 
+        spec.addParameter(
+                ParameterSpec.builder(file, MultipartBody.Part::class.asTypeName().javaToKotlinType())
+                        .addAnnotation(Part::class.java)
+                        .build())
 
 
         val urlParams = method.parameters.filter { it.hasAnnotation(PathVariable::class.java) }
