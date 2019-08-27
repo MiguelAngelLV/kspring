@@ -83,15 +83,19 @@ class SwaggerProcessor(val processingEnv: ProcessingEnvironment) {
             it.annotationMirrors
                     .map { a -> AnnotationSpec.get(a) }
                     .filterNot { a -> a.className.simpleName == "RequestParam" }
-                    .forEach { a -> param.addAnnotation(a)
-            }
+                    .forEach { a ->
+                        param.addAnnotation(a)
+                    }
 
             if (it.hasAnnotation(RequestParam::class.java)) {
                 val spec = AnnotationSpec.get(it.getAnnotation(RequestParam::class.java))
                 val builder = AnnotationSpec.builder(RequestParam::class.java)
                 spec.members
                         .filterNot { c -> "$c".startsWith("required") }
-                        .forEach { c -> builder.addMember("value = %S", c) }
+                        .forEach { c ->
+                            if ("$c".contains("=")) builder.addMember(c) else builder.addMember("value = $c")
+                        }
+
 
                 builder.addMember("required = ${!it.hasAnnotation(Nullable::class.java)}")
 
