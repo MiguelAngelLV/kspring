@@ -313,6 +313,8 @@ class Spring2Mvc(val element: Element, val processingEnv: ProcessingEnvironment)
                 .addModifiers(KModifier.ABSTRACT)
 
 
+        spec.addAnnotation(Multipart::class.java)
+
         spec.addAnnotation(AnnotationSpec.builder(POST::class.java)
                 .addMember("value = %S", endPoint)
                 .build()
