@@ -91,7 +91,7 @@ class SwaggerProcessor(val processingEnv: ProcessingEnvironment) {
                 val builder = AnnotationSpec.builder(RequestParam::class.java)
                 spec.members
                         .filterNot { c -> "$c".startsWith("required") }
-                        .forEach { c -> builder.addMember(c) }
+                        .forEach { c -> builder.addMember("value = %S", c) }
 
                 builder.addMember("required = ${!it.hasAnnotation(Nullable::class.java)}")
 
