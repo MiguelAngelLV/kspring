@@ -103,6 +103,9 @@ class SwaggerProcessor(val processingEnv: ProcessingEnvironment) {
         }
 
 
+
+
+
         val summary = getDocumentLine("Summary", element)
         val description = getDocumentLine("Description", element)
 
@@ -188,7 +191,14 @@ class SwaggerProcessor(val processingEnv: ProcessingEnvironment) {
 
 
     fun getDocument(element: Element): String {
-        return processingEnv.elementUtils.getDocComment(element) ?: "No document"
+
+        val document = processingEnv.elementUtils.getDocComment(element)
+
+        if (document != null) return document
+
+        val parent = element.enclosingElement?.enclosingElement?: return "Not document"
+
+        return  processingEnv.elementUtils.getDocComment(parent) ?: return "Not document"
     }
 
 
