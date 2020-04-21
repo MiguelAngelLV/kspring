@@ -3,6 +3,7 @@ package org.malv.kspring.spring2mvc
 
 import com.squareup.kotlinpoet.*
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
+import okhttp3.MultipartBody
 import org.jetbrains.annotations.Nullable
 import org.malv.kspring.KSpring.Companion.KAPT_KOTLIN_GENERATED_OPTION_NAME
 import org.malv.kspring.spring2swagger.REST
@@ -171,7 +172,6 @@ class Spring2Mvc(val element: Element, val processingEnv: ProcessingEnvironment)
         }
 
 
-
         val response = Call::class.asClassName()
         val returnType = response.parameterizedBy(method.returnType.asTypeName().javaToKotlinType())
 
@@ -187,8 +187,6 @@ class Spring2Mvc(val element: Element, val processingEnv: ProcessingEnvironment)
     fun createPost(method: ExecutableElement) {
 
 
-
-
         val mapping = method.getAnnotation(PostMapping::class.java)
         val endPoint = "$route${mapping.value.first()}"
 
@@ -201,11 +199,11 @@ class Spring2Mvc(val element: Element, val processingEnv: ProcessingEnvironment)
         )
 
 
+        val body = method.parameters.firstOrNull { it.hasAnnotation(RequestBody::class.java) }
+                ?: throw Exception("POST method ($endPoint) don't  have Body")
 
-        val body = method.parameters.firstOrNull { it.hasAnnotation(RequestBody::class.java) } ?: throw Exception("POST method ($endPoint) don't  have Body")
 
-
-        spec.addParameter(ParameterSpec.builder("${body.simpleName}",  body.asType().asTypeName().javaToKotlinType())
+        spec.addParameter(ParameterSpec.builder("${body.simpleName}", body.asType().asTypeName().javaToKotlinType())
                 .addAnnotation(Body::class.java)
                 .build())
 
@@ -259,11 +257,11 @@ class Spring2Mvc(val element: Element, val processingEnv: ProcessingEnvironment)
         )
 
 
+        val body = method.parameters.firstOrNull { it.hasAnnotation(RequestBody::class.java) }
+                ?: throw Exception("POST method ($endPoint) don't  have Body")
 
-        val body = method.parameters.firstOrNull { it.hasAnnotation(RequestBody::class.java) } ?: throw Exception("POST method ($endPoint) don't  have Body")
 
-
-        spec.addParameter(ParameterSpec.builder("${body.simpleName}",  body.asType().asTypeName().javaToKotlinType())
+        spec.addParameter(ParameterSpec.builder("${body.simpleName}", body.asType().asTypeName().javaToKotlinType())
                 .addAnnotation(Body::class.java)
                 .build())
 
@@ -312,23 +310,39 @@ class Spring2Mvc(val element: Element, val processingEnv: ProcessingEnvironment)
                 .addModifiers(KModifier.ABSTRACT)
 
 
+        spec.addAnnotation(Multipart::class.java)
+
         spec.addAnnotation(AnnotationSpec.builder(POST::class.java)
                 .addMember("value = %S", endPoint)
                 .build()
         )
 
 
+        method.parameters.firstOrNull { it.hasAnnotation(RequestBody::class.java) }?.let {
+
+            spec.addParameter(ParameterSpec.builder("${it.simpleName}", it.asType().asTypeName().javaToKotlinType())
+                    .addAnnotation(Body::class.java)
+                    .build())
+
+        }
 
 
-        val file = method.parameters.find { it.hasAnnotation(RequestPart::class.java) }?.simpleName?.toString() ?: "file"
+        val file = method.parameters.find { it.hasAnnotation(RequestPart::class.java) }?.simpleName?.toString()
+                ?: "file"
 
 
-        spec.addParameter(file, Part::class.asTypeName().javaToKotlinType())
 
+        spec.addParameter(
+                ParameterSpec.builder(file, MultipartBody.Part::class.asTypeName().javaToKotlinType())
+                        .addAnnotation(Part::class.java)
+                        .build())
 
 
         val urlParams = method.parameters.filter { it.hasAnnotation(PathVariable::class.java) }
         val parameters = method.parameters.filter { it.hasAnnotation(RequestParam::class.java) }
+
+
+
 
         urlParams.forEach {
 
@@ -361,13 +375,6 @@ class Spring2Mvc(val element: Element, val processingEnv: ProcessingEnvironment)
         api.addFunction(spec.build())
 
 
-
-
-
-
-
-
-
     }
 
 
@@ -382,7 +389,6 @@ class Spring2Mvc(val element: Element, val processingEnv: ProcessingEnvironment)
                 .addType(type)
                 .addImport("com.fasterxml.jackson.module.kotlin", "jacksonTypeRef")
                 .build()
-
 
 
         val dir = processingEnv.options[KAPT_KOTLIN_GENERATED_OPTION_NAME]
